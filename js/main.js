@@ -67,6 +67,7 @@ const detailRoute = document.querySelector('#detail-route');
 const detailMap = document.querySelector('#detail-map');
 const appFeedback = document.querySelector('#app-feedback');
 const mapFeedback = document.querySelector('#map-feedback');
+const themeToggle = document.querySelector('#theme-toggle');
 let valleyMap;
 let activeRouteLayer;
 let activeNearbyLayer;
@@ -82,12 +83,29 @@ const emergencyMarkers = new Map();
 const storageKeys = {
   favorites: 'ghumante:favorites',
   recent: 'ghumante:recent-viewed',
-  itinerary: 'ghumante:itinerary'
+  itinerary: 'ghumante:itinerary',
+  theme: 'ghumante:theme'
 };
 const itineraryState = {
   days: 1,
   selectedIds: []
 };
+
+function setTheme(theme) {
+  const nextTheme = theme === 'dark' ? 'dark' : 'light';
+  document.documentElement.dataset.theme = nextTheme;
+  try { localStorage.setItem(storageKeys.theme, nextTheme); } catch {}
+  if (themeToggle) {
+    const isDark = nextTheme === 'dark';
+    themeToggle.setAttribute('aria-pressed', String(isDark));
+    themeToggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+    themeToggle.querySelector('.theme-toggle-icon').textContent = isDark ? '☀' : '☾';
+    themeToggle.querySelector('.theme-toggle-text').textContent = isDark ? 'Light mode' : 'Dark mode';
+  }
+  window.setTimeout(() => valleyMap?.invalidateSize(), 0);
+}
+
+setTheme(document.documentElement.dataset.theme || 'light');
 
 function showAppMessage(message) {
   if (!appFeedback) return;
@@ -256,7 +274,7 @@ function renderDestinations() {
   const visibleDestinations = destinations.filter((destination) => (activeCity === 'all' || destination.city === activeCity) && (activeCategory === 'all' || destination.category === activeCategory));
   destinationGrid.innerHTML = visibleDestinations.map((destination, index) => `
     <article class="destination-card tone-${destination.tone}" style="--card-order: ${index}">
-      <img class="card-photo" src="${destination.image}" alt="${destination.name}" loading="lazy" onerror="this.onerror=null;this.src='${photoFallback}'" />
+      <img class="card-photo" src="${destination.image}" alt="${destination.name}, ${destination.type || 'destination'} in ${destination.city || 'Kathmandu Valley'}" loading="lazy" onerror="this.onerror=null;this.src='${photoFallback}'" />
       <div class="card-content"><div class="card-meta"><span>${destination.category || 'Destination'}</span><span>${destination.tag || 'Worth a stop'}</span></div><h3>${destination.name || 'Unnamed destination'}</h3><p class="card-location">${destination.location || 'Kathmandu Valley'}</p><p>${destination.description || 'Travel information is not available for this place yet.'}</p><div class="card-visit-meta"><span>${destination.duration || 'Plan ahead'}</span><span>${(destination.openingHours || 'Check locally').split(';')[0]}</span></div><div class="card-actions"><button class="card-link" type="button" data-detail-id="${destination.id}">View details <span aria-hidden="true">â†’</span></button><button class="card-link" type="button" data-destination-map="${destination.id}">View on map <span aria-hidden="true">â†’</span></button><button class="card-link" type="button" data-destination="${destination.name}">How to get here <span aria-hidden="true">â†’</span></button><button class="card-link" type="button" data-favorite-id="${destination.id}">${isFavorited(destination.id) ? 'Remove favorite' : 'Save favorite'} <span aria-hidden="true">â˜…</span></button></div></div>
     </article>
   `).join('');
@@ -271,7 +289,7 @@ function showDestinationDetail(destination) {
   saveRecentDestination(destination.id);
   detailImage.src = destination.image;
   detailImage.onerror = () => { detailImage.src = photoFallback; };
-  detailImage.alt = destination.name;
+  detailImage.alt = `${destination.name}, ${destination.type || 'destination'} in ${destination.city || 'Kathmandu Valley'}`;
   detailCategory.textContent = `${destination.category} Ã‚Â· ${destination.type}`;
   detailTitle.textContent = destination.name;
   detailLocation.textContent = destination.location;
@@ -681,6 +699,7 @@ function initialiseMap() {
   destinations.filter((destination) => hasCoordinates(destination.coordinates)).forEach((destination) => {
     const popup = `<strong>${destination.name}</strong><br><span>${destination.city} Ã‚Â· ${destination.type}</span>`;
     const marker = L.circleMarker(destination.coordinates, {
+      className: 'destination-map-marker',
       color: '#182a2a',
       fillColor: '#e97855',
       fillOpacity: 1,
@@ -692,7 +711,7 @@ function initialiseMap() {
   });
 
   emergencyServices.filter((service) => hasCoordinates(service.coordinates)).forEach((service) => {
-    const marker = L.circleMarker(service.coordinates, { color: '#182a2a', fillColor: '#c74646', fillOpacity: 1, radius: 7, weight: 2 });
+    const marker = L.circleMarker(service.coordinates, { className: 'emergency-map-marker', color: '#182a2a', fillColor: '#c74646', fillOpacity: 1, radius: 7, weight: 2 });
     marker.bindPopup(`<strong>${service.name}</strong><br><span>${service.category} · ${service.area}</span>`).on('click', () => showEmergencyService(service)).addTo(valleyMap);
     emergencyMarkers.set(service.id, marker);
   });
@@ -842,6 +861,10 @@ radiusButtons.forEach((button) => button.addEventListener('click', () => {
   renderNearbyPlaces();
 }));
 
+themeToggle?.addEventListener('click', () => {
+  setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+});
+
 async function initialiseApp() {
   showLoader('Loading Kathmandu Valley transport data...');
   try {
@@ -877,3 +900,5 @@ async function initialiseApp() {
 }
 
 initialiseApp();
+document.body.classList.add('page-entering');
+window.setTimeout(() => document.body.classList.remove('page-entering'), 900);

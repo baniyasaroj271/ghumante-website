@@ -10,17 +10,28 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="css/styles.css" />
+  <script>
+    (() => {
+      try {
+        const savedTheme = localStorage.getItem('ghumante:theme');
+        document.documentElement.dataset.theme = savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      } catch {
+        document.documentElement.dataset.theme = 'light';
+      }
+    })();
+  </script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script type="module" src="js/main.js"></script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
   <div class="app-loader" id="app-loader" role="status" aria-live="polite" aria-busy="true">
     <span class="app-loader-spinner" aria-hidden="true"></span>
     <span id="app-loader-message">Loading your valley guide...</span>
   </div>
   <div class="app-feedback" id="app-feedback" role="status" aria-live="polite" hidden></div>
-  <header class="site-header">
-    <a class="brand" href="#top" aria-label="Ghumante home"><span class="brand-mark">G</span><span>ghumante</span></a>
+  <header class="site-header" id="site-header">
+    <a class="brand" href="#main-content" aria-label="Ghumante home"><span class="brand-mark">G</span><span>ghumante</span></a>
     <nav class="main-nav" aria-label="Main navigation">
       <a href="#explore">Explore</a>
       <a href="#map">Map</a>
@@ -29,9 +40,10 @@
       <a href="#about">About the valley</a>
     </nav>
     <button class="header-action" type="button" data-scroll-target="#routes">Find a bus <span aria-hidden="true">↗</span></button>
+    <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false"><span class="theme-toggle-icon" aria-hidden="true">☾</span><span class="theme-toggle-text">Dark mode</span></button>
   </header>
 
-  <main id="top">
+  <main id="main-content">
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-copy">
         <p class="eyebrow">A field guide to Kathmandu Valley</p>
