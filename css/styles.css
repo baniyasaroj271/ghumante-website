@@ -330,6 +330,8 @@ label { color: #c0d5ce; font-size: .73rem; font-weight: 700; }
 .route-suggestions { top: 73px; }
 .route-arrow { align-self: end; color: var(--yellow); padding-bottom: 13px; }
 .route-result { grid-column: 2; min-height: 25px; }
+.route-map-frame { background: var(--cream); grid-column: 1 / -1; min-height: 360px; overflow: hidden; }
+#route-map { height: 420px; width: 100%; }
 .route-answer { align-items: start; border-top: 1px solid rgba(255, 253, 248, .3); display: flex; gap: 13px; padding-top: 17px; }
 .route-icon { color: var(--yellow); font-size: 1.5rem; }
 .route-answer strong { font-family: var(--display); font-size: 1.3rem; }
@@ -429,6 +431,7 @@ label { color: #c0d5ce; font-size: .73rem; font-weight: 700; }
   .route-form { grid-template-columns: 1fr; margin-top: 18px; }
   .route-arrow { display: none; }
   .route-result { margin-top: 18px; }
+  #route-map { height: min(56vh, 390px); }
   .route-answer { flex-direction: column; }
   .route-card-top, .saved-panel-heading, .itinerary-panel-heading, .stop-details-heading, .nearby-card-heading, .emergency-card-heading { align-items: flex-start; flex-direction: column; }
   .route-map-button, .nearby-map-button { white-space: normal; }

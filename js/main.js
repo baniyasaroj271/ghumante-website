@@ -80,6 +80,17 @@ let activeCategory = 'all';
 let selectedDestination;
 let currentUserCoordinates;
 const geocodedLocations = new Map();
+const knownLocationCoordinates = {
+  'satungal': [27.6719, 85.2385],
+  'ratna park': [27.7058, 85.3141],
+  'kalanki': [27.6931, 85.2812],
+  'koteshwor': [27.6784, 85.3496],
+  'lagankhel': [27.6669, 85.3229],
+  'thankot': [27.6735, 85.2192],
+  'boudha': [27.7215, 85.3620],
+  'kirtipur': [27.6781, 85.2778],
+  'nagarkot': [27.7172, 85.5217]
+};
 const photoFallback = 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80';
 const destinationMarkers = new Map();
 const emergencyMarkers = new Map();
@@ -419,6 +430,7 @@ function routesBetween(fromName, toName) {
 
 async function geocodeValleyLocation(location) {
   const cacheKey = location.name.toLowerCase();
+  if (knownLocationCoordinates[cacheKey]) return knownLocationCoordinates[cacheKey];
   if (geocodedLocations.has(cacheKey)) return geocodedLocations.get(cacheKey);
   try {
     const response = await fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&accept-language=en&q=${encodeURIComponent(`${location.name}, Kathmandu Valley, Nepal`)}`);
@@ -433,16 +445,31 @@ async function geocodeValleyLocation(location) {
   }
 }
 
+async function getRoadRoute(fromCoordinates, toCoordinates) {
+  try {
+    const [fromLatitude, fromLongitude] = fromCoordinates;
+    const [toLatitude, toLongitude] = toCoordinates;
+    const response = await fetch(`https://router.project-osrm.org/route/v1/driving/${fromLongitude},${fromLatitude};${toLongitude},${toLatitude}?overview=full&geometries=geojson`);
+    if (!response.ok) return null;
+    const route = (await response.json()).routes?.[0];
+    return route?.geometry?.coordinates?.map(([longitude, latitude]) => [latitude, longitude]) || null;
+  } catch {
+    return null;
+  }
+}
+
 async function showSelectedLocationsOnMap(fromLocation, toLocation) {
   if (!valleyMap || typeof L === 'undefined') return false;
   const [fromCoordinates, toCoordinates] = await Promise.all([geocodeValleyLocation(fromLocation), geocodeValleyLocation(toLocation)]);
   if (!hasCoordinates(fromCoordinates) || !hasCoordinates(toCoordinates)) return false;
   clearRouteFromMap();
   activeRouteLayer = L.layerGroup().addTo(valleyMap);
-  L.polyline([fromCoordinates, toCoordinates], { color: '#f0c45c', dashArray: '8 10', weight: 4 }).bindTooltip('Selected locations — not a verified bus path').addTo(activeRouteLayer);
+  const roadCoordinates = await getRoadRoute(fromCoordinates, toCoordinates);
+  const lineCoordinates = roadCoordinates?.length > 1 ? roadCoordinates : [fromCoordinates, toCoordinates];
+  L.polyline(lineCoordinates, { color: '#f0c45c', dashArray: roadCoordinates ? null : '8 10', weight: 5 }).bindTooltip(roadCoordinates ? 'Suggested road route' : 'Direct location line').addTo(activeRouteLayer);
   createRouteMarker(fromCoordinates, 'start', `Start: ${fromLocation.name}`).addTo(activeRouteLayer).openPopup();
   createRouteMarker(toCoordinates, 'destination', `Destination: ${toLocation.name}`).addTo(activeRouteLayer);
-  valleyMap.fitBounds(L.latLngBounds([fromCoordinates, toCoordinates]), { padding: [35, 35], maxZoom: 14 });
+  valleyMap.fitBounds(L.latLngBounds(lineCoordinates), { padding: [35, 35], maxZoom: 14 });
   return true;
 }
 
@@ -465,7 +492,7 @@ function showRoute(event) {
   const matchingRoutes = routesBetween(fromLocation.name, toLocation.name);
   if (!matchingRoutes.length) {
     const mapped = await showSelectedLocationsOnMap(fromLocation, toLocation);
-    routeResult.innerHTML = `<p class="route-empty">${fromLocation.name} and ${toLocation.name} are inside Kathmandu Valley, but that exact pairing is not in the guide yet.${mapped ? ' The English map shows your selected start and destination; the dashed line is a location guide, not a verified bus path.' : ' We could not locate both places on the map right now.'}</p>`;
+    routeResult.innerHTML = `<p class="route-empty">Map route preview: ${fromLocation.name} to ${toLocation.name}.${mapped ? ' Follow the marked start, destination, and suggested road line.' : ''}</p>`;
     routeOptions.innerHTML = '';
     return;
   }
@@ -730,7 +757,9 @@ function useBrowserLocation() {
 }
 
 function initialiseMap() {
-  const mapElement = document.querySelector('#valley-map');
+  const mapElement = window.location.pathname.endsWith('bus-routes.html')
+    ? document.querySelector('#route-map')
+    : document.querySelector('#valley-map');
   if (!mapElement || typeof L === 'undefined') {
     if (mapFeedback) mapFeedback.hidden = false;
     return;
@@ -748,8 +777,8 @@ function initialiseMap() {
   });
 
   L.control.zoom({ position: 'bottomright' }).addTo(valleyMap);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors',
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
     maxZoom: 19
   }).addTo(valleyMap);
 
