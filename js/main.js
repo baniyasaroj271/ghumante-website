@@ -17,6 +17,7 @@ const destinationGrid = document.querySelector('#destination-grid');
 const favoritesList = document.querySelector('#favorites-list');
 const favoritesCount = document.querySelector('#favorites-count');
 const recentList = document.querySelector('#recent-list');
+const heroRecentList = document.querySelector('#hero-recent-list');
 const itineraryPicker = document.querySelector('#itinerary-picker');
 const itineraryList = document.querySelector('#itinerary-list');
 const itineraryTransit = document.querySelector('#itinerary-transit');
@@ -204,11 +205,21 @@ function renderFavorites() {
 
 function renderRecentDestinations() {
   const recentIds = getRecentIds();
+  renderHeroRecentDestinations(recentIds);
   recentList.innerHTML = recentIds.length ? recentIds.map((id) => {
     const destination = getDestinationById(id);
     if (!destination) return '';
     return `<button type="button" class="recent-item" data-open-destination="${destination.id}"><strong>${destination.name}</strong><span>${destination.city} Ã‚Â· ${destination.type}</span></button>`;
   }).join('') : '<p class="saved-empty">Your five most recent destinations will appear here after you open them.</p>';
+}
+
+function renderHeroRecentDestinations(recentIds) {
+  if (!heroRecentList) return;
+  heroRecentList.innerHTML = recentIds.length ? recentIds.map((id) => {
+    const destination = getDestinationById(id);
+    if (!destination) return '';
+    return `<button type="button" class="recent-item" data-open-destination="${destination.id}"><strong>${destination.name}</strong><span>${destination.city} &middot; ${destination.type}</span></button>`;
+  }).join('') : '<p class="saved-empty">Open a destination to see it here.</p>';
 }
 
 function renderItineraryPicker() {
@@ -749,6 +760,7 @@ function focusDestination(destination) {
     showDestinationDetail(destination);
     return;
   }
+  document.querySelector('#map')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   valleyMap?.flyTo(destination.coordinates, 14, { duration: 1 });
   destinationMarkers.get(destination.id)?.openPopup();
   setNearbyOrigin({ name: destination.name, coordinates: destination.coordinates }, `${destination.city} Ã‚Â· ${destination.type}`);

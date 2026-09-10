@@ -63,16 +63,31 @@
           <a class="text-link" href="#routes">Plan a ride <span aria-hidden="true">→</span></a>
         </div>
       </div>
-      <div class="hero-visual" aria-label="Illustration of Kathmandu Valley hills and a public bus">
-        <div class="sun"></div>
-        <div class="ridge ridge-back"></div>
-        <div class="ridge ridge-front"></div>
-        <div class="prayer-flag flag-one"></div>
-        <div class="prayer-flag flag-two"></div>
-        <div class="bus-illustration"><span class="bus-window"></span><span class="bus-window"></span><span class="bus-window"></span><span class="bus-wheel wheel-one"></span><span class="bus-wheel wheel-two"></span></div>
-        <span class="visual-label label-top">Kathmandu Valley</span>
-        <span class="visual-label label-bottom">three cities, one living valley</span>
+      <div class="hero-visual">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSu4CeVWGx8TEFSQkLdMXz6_4k-o0f8H4HSSs04cq8lRgsz_J6M9wk4Z7s&amp;s=10" alt="Kathmandu Valley" />
+        <aside class="hero-recent" aria-labelledby="hero-recent-title">
+          <span class="hero-recent-label">Recent places visited</span>
+          <h2 id="hero-recent-title">Pick up where you left off.</h2>
+          <div class="hero-recent-list" id="hero-recent-list"></div>
+        </aside>
       </div>
+    </section>
+
+    <section class="map-section section-shell" id="map" aria-labelledby="map-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">Valley at a glance</p><h2 id="map-title">Keep the whole valley within reach.</h2></div>
+        <p class="section-note">Move around Kathmandu, Lalitpur, and Bhaktapur without losing the plot.</p>
+      </div>
+      <div class="map-frame">
+        <div id="valley-map" aria-label="Interactive map of Kathmandu Valley"></div>
+        <p class="map-feedback" id="map-feedback" hidden>Map information is not available right now. You can still browse destinations and bus routes below.</p>
+        <p class="map-boundary-note">Map view limited to Kathmandu Valley</p>
+      </div>
+      <aside class="stop-details" id="stop-details" aria-live="polite" hidden>
+        <div class="stop-details-heading"><div><p class="eyebrow">Bus stop guide</p><h3 id="stop-details-title"></h3><p id="stop-details-location"></p></div><button class="stop-details-close" id="stop-details-close" type="button" aria-label="Close bus stop details">×</button></div>
+        <div class="stop-details-grid"><div><span class="stop-detail-label">Bus routes</span><ul id="stop-details-routes"></ul></div><div><span class="stop-detail-label">Nearby attractions</span><ul id="stop-details-attractions"></ul></div></div>
+        <div class="stop-walking"><span class="stop-detail-label">Walking directions</span><p id="stop-details-walking"></p></div>
+      </aside>
     </section>
 
     <section class="explore-section section-shell" id="explore" aria-labelledby="explore-title">
@@ -170,23 +185,6 @@
         <img id="detail-image" class="detail-image" src="" alt="" />
         <div class="detail-copy"><div class="detail-heading"><div><p class="eyebrow" id="detail-category"></p><h2 id="detail-title"></h2><p class="detail-location" id="detail-location"></p><p class="detail-coordinates" id="detail-coordinates"></p></div><button class="detail-close" id="detail-close" type="button" aria-label="Close destination details">×</button></div><p id="detail-description"></p><div class="detail-facts" id="detail-facts"></div><div class="detail-columns"><div><span class="detail-label">Nearby bus stops</span><ul id="detail-bus-stops"></ul></div><div><span class="detail-label">Nearby attractions</span><ul id="detail-attractions"></ul></div></div><div class="detail-transport"><span class="detail-label">Available transportation</span><ul id="detail-transport-options"></ul><p class="detail-distance" id="detail-distance"></p></div><div class="detail-actions"><button class="button button-dark" id="detail-route" type="button">How to get here <span aria-hidden="true">↗</span></button><button class="text-link detail-map-link" id="detail-map" type="button">View on map <span aria-hidden="true">↗</span></button></div></div>
       </div>
-    </section>
-
-    <section class="map-section section-shell" id="map" aria-labelledby="map-title">
-      <div class="section-heading">
-        <div><p class="eyebrow">Valley at a glance</p><h2 id="map-title">Keep the whole valley within reach.</h2></div>
-        <p class="section-note">Move around Kathmandu, Lalitpur, and Bhaktapur without losing the plot.</p>
-      </div>
-      <div class="map-frame">
-        <div id="valley-map" aria-label="Interactive map of Kathmandu Valley"></div>
-        <p class="map-feedback" id="map-feedback" hidden>Map information is not available right now. You can still browse destinations and bus routes below.</p>
-        <p class="map-boundary-note">Map view limited to Kathmandu Valley</p>
-      </div>
-      <aside class="stop-details" id="stop-details" aria-live="polite" hidden>
-        <div class="stop-details-heading"><div><p class="eyebrow">Bus stop guide</p><h3 id="stop-details-title"></h3><p id="stop-details-location"></p></div><button class="stop-details-close" id="stop-details-close" type="button" aria-label="Close bus stop details">×</button></div>
-        <div class="stop-details-grid"><div><span class="stop-detail-label">Bus routes</span><ul id="stop-details-routes"></ul></div><div><span class="stop-detail-label">Nearby attractions</span><ul id="stop-details-attractions"></ul></div></div>
-        <div class="stop-walking"><span class="stop-detail-label">Walking directions</span><p id="stop-details-walking"></p></div>
-      </aside>
     </section>
 
     <section class="nearby-section section-shell" id="nearby" aria-labelledby="nearby-title">

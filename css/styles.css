@@ -118,7 +118,17 @@ h2 { font-size: clamp(2.2rem, 4vw, 3.45rem); line-height: 1; margin-bottom: 20px
 .button-light { background: linear-gradient(135deg, var(--yellow), #f6d98c); color: var(--ink); white-space: nowrap; }
 
 .hero-visual { background: linear-gradient(180deg, #d7e6de 0%, #b8d2c8 58%, #a8c4b7 100%); min-height: 500px; overflow: hidden; position: relative; border-radius: 0 0 0 16px; box-shadow: var(--shadow-lg); }
+.hero-visual img { display: block; height: 100%; inset: 0; object-fit: cover; position: absolute; width: 100%; }
 .hero-visual::before { background: linear-gradient(180deg, rgba(255,255,255,.42), transparent); content: ''; inset: 0; position: absolute; }
+.hero-recent { background: rgba(255, 253, 248, .94); box-shadow: var(--shadow-md); max-width: 285px; padding: 18px; position: absolute; right: 18px; top: 18px; z-index: 1; }
+.hero-recent-label { color: var(--coral); display: block; font-size: .64rem; font-weight: 700; letter-spacing: .12em; margin-bottom: 7px; text-transform: uppercase; }
+.hero-recent h2 { font-size: 1.35rem; line-height: 1.05; margin: 0; }
+.hero-recent-list { display: grid; gap: 7px; margin-top: 14px; }
+.hero-recent .recent-item { background: rgba(243, 239, 230, .7); border: 0; border-left: 2px solid var(--yellow); padding: 9px 10px; }
+.hero-recent .recent-item:hover, .hero-recent .recent-item:focus-visible { background: var(--cream); border-left-color: var(--coral); outline: 0; }
+.hero-recent .recent-item strong { font-size: .92rem; }
+.hero-recent .recent-item span { font-size: .7rem; }
+.hero-recent .saved-empty { color: var(--ink); font-size: .75rem; }
 .sun { background: radial-gradient(circle at 35% 35%, #fff6cf 0%, var(--yellow) 52%, #e5a93a 100%); border-radius: 50%; height: 170px; position: absolute; right: 13%; top: 14%; width: 170px; }
 .ridge { bottom: 0; left: -15%; position: absolute; transform: rotate(-8deg); width: 130%; }
 .ridge-back { background: #8fb1a8; height: 45%; clip-path: polygon(0 55%, 17% 32%, 32% 48%, 48% 18%, 60% 43%, 76% 30%, 100% 51%, 100% 100%, 0 100%); }
@@ -135,6 +145,7 @@ h2 { font-size: clamp(2.2rem, 4vw, 3.45rem); line-height: 1; margin-bottom: 20px
 .flag-one { left: 16%; transform: rotate(7deg); } .flag-two { right: 24%; transform: rotate(-9deg); }
 
 .section-shell { margin: 0 auto; max-width: 1240px; padding: 96px 20px; }
+.map-section { scroll-margin-top: 82px; }
 .section-heading { align-items: end; display: flex; justify-content: space-between; margin-bottom: 38px; }
 .section-heading h2 { max-width: 490px; margin-bottom: 0; }
 .section-note { color: var(--muted); font-size: .93rem; max-width: 250px; }
@@ -370,6 +381,7 @@ label { color: #c0d5ce; font-size: .73rem; font-weight: 700; }
   .hero-copy { padding: 42px 0 32px; }
   h1 { font-size: clamp(2.95rem, 14vw, 4.6rem); margin-bottom: 22px; }
   .hero-visual { min-height: 340px; }
+  .hero-recent { max-width: 250px; right: 14px; top: 14px; }
   .bus-illustration { left: 18%; transform: rotate(-4deg) scale(.86); transform-origin: center; }
   .sun { right: 8%; top: 12%; transform: scale(.82); transform-origin: center; }
   .section-shell { padding: 64px 20px; }
@@ -420,6 +432,7 @@ label { color: #c0d5ce; font-size: .73rem; font-weight: 700; }
   .search-input-wrap input, .route-location-field input { padding: 15px 12px; }
   .search-suggestions, .route-suggestions { top: 72px; }
   .hero-actions { align-items: stretch; flex-direction: column; }
+  .hero-recent { left: 14px; max-width: none; right: 14px; }
   .button, .button-dark, .button-light { width: 100%; }
   .card-photo, .detail-image, .hero-visual, #valley-map { border-radius: 14px; }
   .map-boundary-note { font-size: .64rem; }
@@ -464,6 +477,7 @@ html[data-theme="dark"] .site-header {
 }
 
 html[data-theme="dark"] .hero-visual { background: linear-gradient(180deg, #244b4b 0%, #1b3938 58%, #142b2c 100%); }
+html[data-theme="dark"] .hero-recent { background: rgba(23, 41, 41, .94); }
 html[data-theme="dark"] .ridge-back { background: #39706b; }
 html[data-theme="dark"] .ridge-front { background: #194a4a; }
 html[data-theme="dark"] .search-suggestions,
