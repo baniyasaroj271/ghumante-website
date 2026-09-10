@@ -10,6 +10,7 @@ const featurePageStyle = `<style>
   body > .site-footer { display: none !important; }
   body > main { min-height: calc(100vh - 80px); }
   #${featureId} { display: block !important; padding-top: 54px; }
+  ${featureId === 'routes' ? '#map { display: block !important; padding: 28px 20px 0 !important; } #map .section-heading, #map .stop-details { display: none !important; }' : ''}
 </style>`;
 
 try {

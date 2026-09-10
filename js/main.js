@@ -3,6 +3,7 @@ import { loadBusRoutes } from './api/routes.js';
 import { loadMapData } from './api/map.js';
 import { loadNearbyPlaces } from './api/nearby.js';
 import { createLocationSearch } from './api/location-search.js';
+import { valleyLocations } from '../data/valley-locations.js';
 import { withLoading, showLoader, hideLoader } from './api/loading.js';
 
 let destinations = [];
@@ -78,6 +79,7 @@ let activeCity = 'all';
 let activeCategory = 'all';
 let selectedDestination;
 let currentUserCoordinates;
+const geocodedLocations = new Map();
 const photoFallback = 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80';
 const destinationMarkers = new Map();
 const emergencyMarkers = new Map();
@@ -415,6 +417,35 @@ function routesBetween(fromName, toName) {
   }).filter(Boolean).sort(compareRoutes);
 }
 
+async function geocodeValleyLocation(location) {
+  const cacheKey = location.name.toLowerCase();
+  if (geocodedLocations.has(cacheKey)) return geocodedLocations.get(cacheKey);
+  try {
+    const response = await fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&accept-language=en&q=${encodeURIComponent(`${location.name}, Kathmandu Valley, Nepal`)}`);
+    if (!response.ok) return null;
+    const [result] = await response.json();
+    const coordinates = result && [Number(result.lat), Number(result.lon)];
+    if (!hasCoordinates(coordinates)) return null;
+    geocodedLocations.set(cacheKey, coordinates);
+    return coordinates;
+  } catch {
+    return null;
+  }
+}
+
+async function showSelectedLocationsOnMap(fromLocation, toLocation) {
+  if (!valleyMap || typeof L === 'undefined') return false;
+  const [fromCoordinates, toCoordinates] = await Promise.all([geocodeValleyLocation(fromLocation), geocodeValleyLocation(toLocation)]);
+  if (!hasCoordinates(fromCoordinates) || !hasCoordinates(toCoordinates)) return false;
+  clearRouteFromMap();
+  activeRouteLayer = L.layerGroup().addTo(valleyMap);
+  L.polyline([fromCoordinates, toCoordinates], { color: '#f0c45c', dashArray: '8 10', weight: 4 }).bindTooltip('Selected locations — not a verified bus path').addTo(activeRouteLayer);
+  createRouteMarker(fromCoordinates, 'start', `Start: ${fromLocation.name}`).addTo(activeRouteLayer).openPopup();
+  createRouteMarker(toCoordinates, 'destination', `Destination: ${toLocation.name}`).addTo(activeRouteLayer);
+  valleyMap.fitBounds(L.latLngBounds([fromCoordinates, toCoordinates]), { padding: [35, 35], maxZoom: 14 });
+  return true;
+}
+
 function showRoute(event) {
   event.preventDefault();
   return withLoading('bus-route', async () => {
@@ -428,19 +459,21 @@ function showRoute(event) {
   if (!routes.length) {
     routeResult.innerHTML = '<p class="route-empty">Bus route information is unavailable right now. Please try again shortly.</p>';
     routeOptions.innerHTML = '';
+    await showSelectedLocationsOnMap(fromLocation, toLocation);
     return;
   }
   const matchingRoutes = routesBetween(fromLocation.name, toLocation.name);
   if (!matchingRoutes.length) {
-    routeResult.innerHTML = `<p class="route-empty">${fromLocation.name} and ${toLocation.name} are inside Kathmandu Valley, but that exact pairing is not in the guide yet. Try another suggested destination.</p>`;
+    const mapped = await showSelectedLocationsOnMap(fromLocation, toLocation);
+    routeResult.innerHTML = `<p class="route-empty">${fromLocation.name} and ${toLocation.name} are inside Kathmandu Valley, but that exact pairing is not in the guide yet.${mapped ? ' The English map shows your selected start and destination; the dashed line is a location guide, not a verified bus path.' : ' We could not locate both places on the map right now.'}</p>`;
     routeOptions.innerHTML = '';
-    clearRouteFromMap();
     return;
   }
   const recommendedRoute = matchingRoutes[0];
   routeResult.innerHTML = `<div class="route-answer"><span class="route-icon" aria-hidden="true">Ã¢â€ â€”</span><div><strong>${recommendedRoute.bus}</strong><p>Recommended for ${recommendedRoute.from} to ${recommendedRoute.to}</p><small>${recommendationReason(recommendedRoute, matchingRoutes)}</small></div></div>`;
   renderRouteOptions(matchingRoutes, recommendedRoute.id);
   showRouteOnMap(recommendedRoute);
+  if (!recommendedRoute.startCoordinates) await showSelectedLocationsOnMap(fromLocation, toLocation);
   }, 'Finding the best route for you...').catch((error) => {
     console.error('Route search failed:', error);
     routeResult.innerHTML = '<p class="route-empty">We could not load route information right now. Please try again.</p>';
@@ -908,7 +941,7 @@ async function initialiseApp() {
     busStops = loadedMap.busStops;
     emergencyServices = loadedMap.emergencyServices;
     nearbyPlaces = loadedNearby;
-    locationSearch = createLocationSearch({ destinations, routes, busStops });
+    locationSearch = createLocationSearch({ destinations, routes, busStops, valleyLocations });
 
     loadItinerary();
     renderFavorites();
