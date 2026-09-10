@@ -91,6 +91,19 @@ const itineraryState = {
   days: 1,
   selectedIds: []
 };
+const featureSectionIds = ['saved', 'itinerary', 'nearby', 'emergency', 'routes'];
+
+function showFeatureSection(sectionId, shouldScroll = true) {
+  if (!featureSectionIds.includes(sectionId)) return false;
+  featureSectionIds.forEach((id) => document.querySelector(`#${id}`)?.classList.toggle('is-home-hidden', id !== sectionId));
+  const section = document.querySelector(`#${sectionId}`);
+  if (shouldScroll) window.requestAnimationFrame(() => section?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+  return true;
+}
+
+function openFeatureFromHash() {
+  showFeatureSection(window.location.hash.slice(1));
+}
 
 function setTheme(theme) {
   const nextTheme = theme === 'dark' ? 'dark' : 'light';
@@ -814,7 +827,10 @@ document.addEventListener('click', (event) => {
   if (itineraryMove) moveItineraryDestination(itineraryMove.dataset.itineraryMove, itineraryMove.dataset.direction);
   if (mapButton) focusDestinationOnMap(destinations.find((destination) => destination.id === mapButton.dataset.destinationMap));
   const scrollTarget = event.target.closest('[data-scroll-target]');
-  if (scrollTarget) document.querySelector(scrollTarget.dataset.scrollTarget)?.scrollIntoView({ behavior: 'smooth' });
+  if (scrollTarget) {
+    const targetId = scrollTarget.dataset.scrollTarget.slice(1);
+    if (!showFeatureSection(targetId)) document.querySelector(scrollTarget.dataset.scrollTarget)?.scrollIntoView({ behavior: 'smooth' });
+  }
   const suggestion = event.target.closest('[data-search-id]');
   if (suggestion) focusDestination(destinations.find((destination) => destination.id === suggestion.dataset.searchId));
   const routeSuggestion = event.target.closest('[data-route-location]');
@@ -912,5 +928,13 @@ async function initialiseApp() {
 }
 
 initialiseApp();
+window.addEventListener('hashchange', openFeatureFromHash);
+document.querySelectorAll('.main-nav a[href^="#"]').forEach((link) => link.addEventListener('click', () => {
+  showFeatureSection(link.getAttribute('href').slice(1), false);
+}));
+if (window.self !== window.top) {
+  document.querySelectorAll('.main-nav a').forEach((link) => { link.target = '_top'; });
+}
+openFeatureFromHash();
 document.body.classList.add('page-entering');
 window.setTimeout(() => document.body.classList.remove('page-entering'), 900);

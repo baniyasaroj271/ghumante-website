@@ -31,15 +31,15 @@
   </div>
   <div class="app-feedback" id="app-feedback" role="status" aria-live="polite" hidden></div>
   <header class="site-header" id="site-header">
-    <a class="brand" href="#main-content" aria-label="Ghumante home"><span class="brand-mark">G</span><span>ghumante</span></a>
+    <a class="brand" href="index.html" aria-label="Ghumante home"><span class="brand-mark">G</span><span>ghumante</span></a>
     <nav class="main-nav" aria-label="Main navigation">
-      <a href="#explore">Explore</a>
-      <a href="#map">Map</a>
-      <a href="#routes">Bus routes</a>
-      <a href="#emergency">Safety</a>
-      <a href="#about">About the valley</a>
+      <a href="saved.html">Saved places</a>
+      <a href="trip-builder.html">Trip builder</a>
+      <a href="nearby.html">Nearby places</a>
+      <a href="emergency.html">Emergency</a>
+      <a href="about.html">About the valley</a>
     </nav>
-    <button class="header-action" type="button" data-scroll-target="#routes">Find a bus <span aria-hidden="true">↗</span></button>
+    <a class="header-action" href="bus-routes.html">Find a bus <span aria-hidden="true">↗</span></a>
     <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false"><span class="theme-toggle-icon" aria-hidden="true">☾</span><span class="theme-toggle-text">Dark mode</span></button>
   </header>
 
@@ -65,6 +65,11 @@
       </div>
       <div class="hero-visual">
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSu4CeVWGx8TEFSQkLdMXz6_4k-o0f8H4HSSs04cq8lRgsz_J6M9wk4Z7s&amp;s=10" alt="Kathmandu Valley" />
+        <aside class="hero-popular" aria-labelledby="hero-popular-title">
+          <span class="hero-recent-label">Popular places to visit</span>
+          <h2 id="hero-popular-title">The valley, in good company.</h2>
+          <a href="#explore">Explore the guide <span aria-hidden="true">→</span></a>
+        </aside>
         <aside class="hero-recent" aria-labelledby="hero-recent-title">
           <span class="hero-recent-label">Recent places visited</span>
           <h2 id="hero-recent-title">Pick up where you left off.</h2>
@@ -108,13 +113,11 @@
         <button class="filter-button category-filter" type="button" data-category="Historical places">History</button>
         <button class="filter-button category-filter" type="button" data-category="Cultural attractions">Culture</button>
         <button class="filter-button category-filter" type="button" data-category="Viewpoints">Viewpoints</button>
-        <button class="filter-button category-filter" type="button" data-category="Markets">Markets</button>
-        <button class="filter-button category-filter" type="button" data-category="Recreational locations">Recreation</button>
       </div>
       <div class="destination-grid" id="destination-grid"></div>
     </section>
 
-    <section class="saved-section section-shell" id="saved" aria-labelledby="saved-title">
+    <section class="saved-section section-shell is-home-hidden" id="saved" aria-labelledby="saved-title">
       <div class="section-heading">
         <div><p class="eyebrow">Your saved places</p><h2 id="saved-title">Favorites and recent stops.</h2></div>
         <p class="section-note">Keep the places you like close, and jump back into the last few destinations you viewed.</p>
@@ -142,7 +145,7 @@
       </div>
     </section>
 
-    <section class="itinerary-section section-shell" id="itinerary" aria-labelledby="itinerary-title">
+    <section class="itinerary-section section-shell is-home-hidden" id="itinerary" aria-labelledby="itinerary-title">
       <div class="section-heading">
         <div><p class="eyebrow">Trip builder</p><h2 id="itinerary-title">Build a one-day or multi-day plan.</h2></div>
         <p class="section-note">Select a few attractions, arrange them in the order you want, and we’ll suggest the bus connection between each stop.</p>
@@ -187,7 +190,7 @@
       </div>
     </section>
 
-    <section class="nearby-section section-shell" id="nearby" aria-labelledby="nearby-title">
+    <section class="nearby-section section-shell is-home-hidden" id="nearby" aria-labelledby="nearby-title">
       <div class="section-heading">
         <div><p class="eyebrow">Right around here</p><h2 id="nearby-title">Nearby places, at your pace.</h2></div>
         <p class="section-note">Choose a place, use your location, and find useful stops within an easy walk.</p>
@@ -206,7 +209,7 @@
       <div class="nearby-grid" id="nearby-grid"></div>
     </section>
 
-    <section class="emergency-section section-shell" id="emergency" aria-labelledby="emergency-title">
+    <section class="emergency-section section-shell is-home-hidden" id="emergency" aria-labelledby="emergency-title">
       <div class="section-heading">
         <div><p class="eyebrow">Keep this close</p><h2 id="emergency-title">Emergency assistance in the valley.</h2></div>
         <p class="section-note">Call first in a serious emergency. Use the map to find a nearby service and get directions.</p>
@@ -233,7 +236,7 @@
       </div>
     </section>
 
-    <section class="route-section section-shell" id="routes" aria-labelledby="route-title">
+    <section class="route-section section-shell is-home-hidden" id="routes" aria-labelledby="route-title">
       <div class="route-panel">
         <div class="route-heading"><p class="eyebrow">Valley transit</p><h2 id="route-title">Where are you headed?</h2><p>Search a starting point and destination on a published Sajha Yatayat route.</p><p class="route-data-note">Verified static route data from Sajha Yatayat. Timetables, live bus positions, fares, and exact stop coordinates are not currently published.</p></div>
         <form class="route-form" id="route-form">
@@ -248,7 +251,28 @@
     </section>
 
     <section class="valley-note section-shell" id="about" aria-labelledby="about-title">
-      <p class="eyebrow">A little context</p><h2 id="about-title">Three cities. Thousands of small detours.</h2><p>Kathmandu Valley is not one attraction with three names. It is a dense, living landscape of courtyards, shrines, workshops, food stalls, and ridgelines. Ghumante helps you make room for the unplanned bits.</p>
+      <div class="valley-note-intro">
+        <p class="eyebrow">A little context</p>
+        <h2 id="about-title">How Kathmandu Valley was created.</h2>
+      </div>
+      <div class="valley-story">
+        <p class="valley-lead">Long before Kathmandu became a busy city filled with temples, streets, and people, the Kathmandu Valley looked very different. According to a famous Nepalese legend, the valley was once a huge lake.</p>
+        <p>At the centre of this lake stood a beautiful lotus. On the lotus was said to be a sacred flame, which attracted the Buddhist bodhisattva <strong>Manjushri</strong>. Seeing the land surrounded by mountains, Manjushri believed it could become a place where people could live.</p>
+        <p>The legend says he used his sword to cut open the mountain at <strong>Chobhar</strong>, creating a passage for the water to escape. As the lake drained, fertile land appeared—land that eventually became the Kathmandu Valley.</p>
+
+        <h3>What does science say?</h3>
+        <p>Modern geology confirms an important part of the old story: Kathmandu Valley really was once covered by a large lake. Scientists have found thick layers of ancient lake sediments beneath the valley, reaching around <strong>500 metres</strong> in places.</p>
+        <p>Over a long period, water escaped through the Chobhar area while rivers and erosion reshaped the landscape. The valley floor seen today gradually formed from ancient lake sediments and later geological processes.</p>
+
+        <h3>Why did the valley form here?</h3>
+        <p>Kathmandu is part of the Himalayas, a region shaped by the continuing collision of the <strong>Indian and Eurasian tectonic plates</strong>. That collision began roughly 50 million years ago and continues to shape the Himalayan region today.</p>
+        <p>The valley is the result of millions of years of geological change, followed by the accumulation and erosion of sediments.</p>
+
+        <h3>Legend and science together</h3>
+        <p>The story of Manjushri cutting the gorge is a traditional cultural legend, not a scientifically documented event. Yet it describes something remarkably close to geological reality: a great body of water once occupied Kathmandu Valley, and the valley was eventually drained.</p>
+        <p>Today, <strong>Chobhar Gorge</strong> remains a place where visitors can see the dramatic landscape associated with this story. From an ancient lake to one of Nepal's most important cultural centres, Kathmandu Valley has been shaped by nature and thousands of years of human history.</p>
+        <p class="valley-closing"><strong>Kathmandu Valley: From Lake to Living City</strong><br>Once a lake.<br>Then a valley.<br>Now the heart of Nepal.</p>
+      </div>
     </section>
   </main>
 
