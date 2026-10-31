@@ -142,7 +142,8 @@ tracking service.
 ## Maps and external resources
 
 - Leaflet is loaded from the public CDN at version 1.9.4.
-- OpenStreetMap tiles are used for the interactive map.
+- OpenStreetMap tiles are used for the interactive map through the public
+  `tile.openstreetmap.org` endpoint.
 - Map usage should follow the OpenStreetMap tile and attribution guidelines.
 - Destination imagery and fonts may be loaded from external providers, so an
   internet connection improves the experience.
